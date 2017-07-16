@@ -22,9 +22,13 @@ namespace TodoMVC.Models
         [DisplayName("完成")]
         public bool IsComplete { get; set; }
 
+        [DisplayName("建立時間")]
+        public DateTime? CreateTime { get; set; }
+
         public Todo()
         {
             Id = Guid.NewGuid();
+            CreateTime = DateTime.Now;
         }
     }
 }

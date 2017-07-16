@@ -16,7 +16,7 @@ namespace TodoMVC.Controllers
 
             using (TodoContext db = new TodoContext())
             {
-                vm.AllList = db.Todos.ToList();//全部Todo
+                vm.AllList = db.Todos.OrderBy(x => x.CreateTime).ToList();//全部Todo
                 vm.NotCompleteCount = db.Todos.Where(x => !x.IsComplete).Count();
             }
             return View(vm);
@@ -28,7 +28,7 @@ namespace TodoMVC.Controllers
 
             using (TodoContext db = new TodoContext())
             {
-                vm.ActiveList = db.Todos.Where(x => !x.IsComplete).ToList();//未完成的Todo
+                vm.ActiveList = db.Todos.Where(x => !x.IsComplete).OrderBy(x => x.CreateTime).ToList();//未完成的Todo
                 vm.NotCompleteCount = db.Todos.Where(x => !x.IsComplete).Count();
             }
             return View(vm);
@@ -40,7 +40,7 @@ namespace TodoMVC.Controllers
 
             using (TodoContext db = new TodoContext())
             {
-                vm.CompletedList = db.Todos.Where(x => x.IsComplete).ToList();//完成的Todo
+                vm.CompletedList = db.Todos.Where(x => x.IsComplete).OrderBy(x => x.CreateTime).ToList();//完成的Todo
                 vm.NotCompleteCount = db.Todos.Where(x => !x.IsComplete).Count();
             }
             return View(vm);
