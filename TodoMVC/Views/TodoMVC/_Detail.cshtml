@@ -1,0 +1,12 @@
+﻿@model TodoMVC.Models.Todo
+
+@using (Html.BeginForm("Edit", "TodoMVC", FormMethod.Post, new { id = "form1", enctype = "multipart/form-data" }))
+{
+    <tr>
+        <td>@Html.CheckBoxFor(m => m.IsComplete, new { @class = "form-control", onclick = "EditIsCompleteonclick(this)" })</td>
+        <td>@Html.TextBoxFor(m => m.Content, new { @class = "form-control", onblur = "EditContentOnBlur(this)" })</td>
+        <td>@Html.HiddenFor(m => m.Id)</td>
+    </tr>
+}
+
+
