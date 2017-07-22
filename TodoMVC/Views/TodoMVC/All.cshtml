@@ -72,10 +72,36 @@
                       Id: $(e).parent().parent().find('td').eq(2).find('input').val()
                   },
                   function (data) {
-                      $("#Count").empty().append(data.NotCompleteCount);
+                      $("#Count").empty().append(data.NotCompleteCount);//修改未完成清單數量
+
+                      if (data.IsComplete == false) {
+                          //若未完成，背景為白
+                          $(e).parent().parent().find('td').eq(1).find('input').css("background-color", "")
+                      }
+                      else
+                      {
+                          //若已完成，背景為灰
+                          $(e).parent().parent().find('td').eq(1).find('input').css("background-color", "#ddd")
+                      }
                   }
          ).fail(function () {
              alert("儲存是否完成時發生異常!!");
+         })
+    }
+
+    //移除Todo
+    function RemoveClick(e) {
+        $.post(
+                 '@Url.Action("RemoveTodo", "TodoMVC")',
+                  {
+                      Id: $(e).parent().parent().find('input').val()
+                  },
+                  function (data) {
+                      $("#Count").empty().append(data.NotCompleteCount);//修改未完成清單數量
+                      $(e).parent().parent().parent().remove();//清除列
+                  }
+         ).fail(function () {
+             alert("刪除內容時發生異常!!");
          })
     }
 

@@ -4,8 +4,21 @@
 {
     <tr>
         <td>@Html.CheckBoxFor(m => m.IsComplete, new { @class = "form-control", onclick = "EditIsCompleteonclick(this)" })</td>
-        <td>@Html.TextBoxFor(m => m.Content, new { @class = "form-control", onblur = "EditContentOnBlur(this)" })</td>
-        <td>@Html.HiddenFor(m => m.Id)</td>
+
+        @if (Model.IsComplete == true)
+        {
+            <td>@Html.TextBoxFor(m => m.Content, new { @class = "form-control", style = "background-color:#ddd;", onblur = "EditContentOnBlur(this)" })</td>
+        }
+        else
+        {
+            <td>@Html.TextBoxFor(m => m.Content, new { @class = "form-control", onblur = "EditContentOnBlur(this)" })</td>
+        }
+
+        <td>@Html.HiddenFor(m => m.Id)
+            <a>
+                <span class="glyphicon glyphicon-remove", onclick="RemoveClick(this)"></span>
+            </a>
+        </td>
     </tr>
 }
 

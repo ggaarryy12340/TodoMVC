@@ -16,9 +16,11 @@ namespace TodoMVC.Controllers
 
             using (TodoContext db = new TodoContext())
             {
-                vm.AllList = db.Todos.OrderBy(x => x.CreateTime).ToList();//全部Todo
-                vm.NotCompleteCount = db.Todos.Where(x => !x.IsComplete).Count();
+                var AllTodos = db.Todos.OrderBy(x => x.CreateTime);
+                vm.AllList = AllTodos.ToList();//全部Todo
+                vm.NotCompleteCount = AllTodos.Where(x => x.IsComplete == false).Count();
             }
+
             return View(vm);
         }
 
@@ -28,9 +30,11 @@ namespace TodoMVC.Controllers
 
             using (TodoContext db = new TodoContext())
             {
-                vm.ActiveList = db.Todos.Where(x => !x.IsComplete).OrderBy(x => x.CreateTime).ToList();//未完成的Todo
-                vm.NotCompleteCount = db.Todos.Where(x => !x.IsComplete).Count();
+                var AllTodos = db.Todos.OrderBy(x => x.CreateTime);
+                vm.ActiveList = AllTodos.Where(x => x.IsComplete == false).ToList();//未完成的Todo
+                vm.NotCompleteCount = AllTodos.Where(x => x.IsComplete == false).Count();
             }
+
             return View(vm);
         }
 
@@ -40,9 +44,11 @@ namespace TodoMVC.Controllers
 
             using (TodoContext db = new TodoContext())
             {
-                vm.CompletedList = db.Todos.Where(x => x.IsComplete).OrderBy(x => x.CreateTime).ToList();//完成的Todo
-                vm.NotCompleteCount = db.Todos.Where(x => !x.IsComplete).Count();
+                var AllTodos = db.Todos.OrderBy(x => x.CreateTime);
+                vm.CompletedList = AllTodos.Where(x => x.IsComplete == true).ToList();//完成的Todo
+                vm.NotCompleteCount = AllTodos.Where(x => x.IsComplete == false).Count();
             }
+
             return View(vm);
         }
 
@@ -84,11 +90,33 @@ namespace TodoMVC.Controllers
         public ActionResult EditIsComplete(Guid Id)
         {
             int NotCompleteCount = 0;
+            bool IsComplete;
 
             using (TodoContext db = new TodoContext())
             {
                 var Single = db.Todos.Find(Id);
                 Single.IsComplete = !Single.IsComplete;//直接反轉 bool
+                db.SaveChanges();
+
+                NotCompleteCount = db.Todos.Where(x => !x.IsComplete).Count();
+                IsComplete = Single.IsComplete;
+            }
+            return Json(new { NotCompleteCount = NotCompleteCount, IsComplete = IsComplete }, JsonRequestBehavior.AllowGet);//return未完成Todo數量, 此列是否完成
+        }
+
+        /// <summary>
+        /// ajax移除Todo
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <returns></returns>
+        public ActionResult RemoveTodo(Guid Id)
+        {
+            int NotCompleteCount = 0;
+
+            using (TodoContext db = new TodoContext())
+            {
+                var Single = db.Todos.Find(Id);
+                db.Todos.Remove(Single);
                 db.SaveChanges();
 
                 NotCompleteCount = db.Todos.Where(x => !x.IsComplete).Count();
